@@ -24,11 +24,15 @@ class _CubitCounterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final counterState = context.watch<CounterCubit>().state;
+    // con el context.select no preciso esto y no se reconstruye el widget cada vez
+    // final counterState = context.watch<CounterCubit>().state;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cubit Counter: ${counterState.transactionCount}'),
+        title: context.select(
+          (CounterCubit value) =>
+              Text('Cubit Counter: ${value.state.transactionCount}'),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -40,6 +44,7 @@ class _CubitCounterView extends StatelessWidget {
       ),
       body: Center(
         child: BlocBuilder<CounterCubit, CounterState>(
+          // esto se precisaria si no usaramos equatable y no tuvieramos el watch de arriba
           // buildWhen: (previous, current) => previous.counter != current.counter,
           builder: (context, state) {
             return Text('Counter Value: ${state.counter}');
