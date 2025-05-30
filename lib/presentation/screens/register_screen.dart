@@ -25,7 +25,7 @@ class _RegisterView extends StatelessWidget {
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FlutterLogo(size: 500),
+              FlutterLogo(size: 100),
 
               _RegisterForm(),
 
@@ -38,17 +38,40 @@ class _RegisterView extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatelessWidget {
+class _RegisterForm extends StatefulWidget {
   const _RegisterForm();
+
+  @override
+  State<_RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<_RegisterForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String username = '';
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           CustomTextFormField(
             label: 'Nombre de Usuario',
             prefixIcon: Icons.person,
+            onChanged: (value) => username = value,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'El nombre de usuario es requerido';
+              }
+
+              if (value.length < 6) {
+                return 'El nombre de usuario debe tener al menos 6 caracteres';
+              }
+
+              return null;
+            },
           ),
 
           const SizedBox(height: 10),
@@ -56,6 +79,20 @@ class _RegisterForm extends StatelessWidget {
           CustomTextFormField(
             label: 'Correo electrónico',
             prefixIcon: Icons.email,
+            onChanged: (value) => email = value,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'El correo electrónico es requerido';
+              }
+
+              final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+              if (!emailRegExp.hasMatch(value)) {
+                return 'El correo electrónico no es válido';
+              }
+
+              return null;
+            },
           ),
 
           const SizedBox(height: 10),
@@ -65,12 +102,28 @@ class _RegisterForm extends StatelessWidget {
             prefixIcon: Icons.key,
             suffixIcon: Icons.remove_red_eye_rounded,
             obscureText: true,
+            onChanged: (value) => password = value,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'La contraseña es requerida';
+              }
+
+              if (value.length < 8) {
+                return 'La contraseña debe tener al menos 8 caracteres';
+              }
+
+              return null;
+            },
           ),
 
           const SizedBox(height: 20),
 
           FilledButton.tonalIcon(
-            onPressed: () {},
+            onPressed: () {
+              final isValid = _formKey.currentState?.validate();
+
+              if (isValid != true) return;
+            },
             icon: Icon(Icons.save),
             label: Text('Crear Usuario'),
           ),
