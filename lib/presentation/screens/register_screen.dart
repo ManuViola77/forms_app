@@ -64,10 +64,7 @@ class _RegisterForm extends StatelessWidget {
             label: 'Nombre de Usuario',
             prefixIcon: Icons.person,
             onChanged: registerCubit.onUsernameChanged,
-            errorMessage:
-                username.isPure || username.isValid
-                    ? null
-                    : 'Usuario no válido',
+            errorMessage: username.errorMessage,
           ),
 
           const SizedBox(height: 10),
@@ -99,10 +96,7 @@ class _RegisterForm extends StatelessWidget {
             suffixIcon: Icons.remove_red_eye_rounded,
             obscureText: true,
             onChanged: registerCubit.onPasswordChanged,
-            errorMessage:
-                password.isPure || password.isValid
-                    ? null
-                    : 'Contraseña inválida',
+            errorMessage: password.errorMessage,
           ),
 
           const SizedBox(height: 20),
